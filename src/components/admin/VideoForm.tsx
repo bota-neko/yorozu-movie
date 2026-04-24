@@ -179,9 +179,19 @@ export default function VideoForm({ initialData, isEdit }: VideoFormProps) {
                   setLoading(false);
                 }
               }}
+              style={{ marginBottom: '10px' }}
             />
+            <div className="input-group" style={{ marginBottom: 0 }}>
+              <input
+                type="text"
+                placeholder="または画像のURLを直接入力"
+                value={formData.thumbnailUrl || ''}
+                onChange={(e) => setFormData({ ...formData, thumbnailUrl: e.target.value })}
+              />
+            </div>
             <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '8px' }}>
-              画像ファイルを選択してください。Vimeoの標準画像以外を使用したい場合に有効です。
+              Vimeoの標準画像以外を使用したい場合に有効です。<br />
+              Vercel Blobを使用して本番環境でもアップロードが可能です。
             </p>
           </div>
         </div>
