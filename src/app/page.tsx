@@ -1,66 +1,73 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
 
-export default function Home() {
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Footer from '@/components/layout/Footer';
+import styles from './page.module.css';
+
+export default function HomePage() {
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/auth/viewer/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+
+      if (res.ok) {
+        router.push('/videos');
+        router.refresh();
+      } else {
+        const data = await res.json();
+        setError(data.error || 'パスワードが正しくありません');
+      }
+    } catch (err) {
+      setError('通信エラーが発生しました');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <div className={styles.container} style={{ flex: 1 }}>
+        <div className={styles.authBox}>
+          <div className={styles.header}>
+            <h1 style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <span style={{ fontSize: '16px', fontWeight: 'normal', marginBottom: '8px', color: 'var(--text-muted)' }}>鹿児島県よろず支援拠点</span>
+              <span>Yラーニング</span>
+            </h1>
+            <p>閲覧にはパスワードが必要です</p>
+          </div>
+          
+          {error && <p className={styles.error}>{error}</p>}
+          
+          <form onSubmit={handleSubmit}>
+            <div className="input-group">
+              <input
+                type="password"
+                placeholder="パスワードを入力"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={loading}>
+              {loading ? '認証中...' : '閲覧を開始する'}
+            </button>
+          </form>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </div>
+      <Footer />
     </div>
   );
 }
