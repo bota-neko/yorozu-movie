@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { videos } from '@/lib/db/schema';
+import { db, videos } from '@/lib/db';
 import { getAdminSession } from '@/lib/auth';
 import { validateTitle, validateVimeoId } from '@/lib/validators';
 import { desc } from 'drizzle-orm';

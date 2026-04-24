@@ -1,5 +1,4 @@
-import { db } from '@/lib/db';
-import { videos } from '@/lib/db/schema';
+import { db, videos } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import VimeoPlayer from '@/components/vimeo/VimeoPlayer';
@@ -37,7 +36,7 @@ export default async function VideoDetailPage({ params }: { params: Promise<{ id
         <h1 className={styles.title}>{video.title}</h1>
         {video.description && (
           <div className={styles.description}>
-            {video.description.split('\n').map((line, i) => (
+            {video.description.split('\n').map((line: any, i: number) => (
               <p key={i}>{line}</p>
             ))}
           </div>

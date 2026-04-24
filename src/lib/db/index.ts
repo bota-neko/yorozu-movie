@@ -1,9 +1,15 @@
 import { drizzle as drizzlePg } from 'drizzle-orm/vercel-postgres';
+import { drizzle as drizzleSqlite } from 'drizzle-orm/better-sqlite3';
 import { sql } from '@vercel/postgres';
 import * as schema from './schema';
 
 const dbUrl = process.env.POSTGRES_URL || process.env.DATABASE_URL;
 const isPg = !!dbUrl;
+
+// Define base types for inference
+export type Video = typeof schema.videos.$inferSelect;
+export type Settings = typeof schema.settings.$inferSelect;
+export type Admin = typeof schema.admins.$inferSelect;
 
 let dbInstance: any;
 let videosInstance: any;
@@ -27,6 +33,6 @@ if (isPg) {
 }
 
 export const db = dbInstance;
-export const videos = videosInstance;
-export const settings = settingsInstance;
-export const admins = adminsInstance;
+export const videos = videosInstance as (typeof schema.videos);
+export const settings = settingsInstance as (typeof schema.settings);
+export const admins = adminsInstance as (typeof schema.admins);

@@ -1,5 +1,4 @@
-import { db } from '@/lib/db';
-import { videos } from '@/lib/db/schema';
+import { db, videos } from '@/lib/db';
 import { eq, and, asc } from 'drizzle-orm';
 import VideoCard from '@/components/vimeo/VideoCard';
 import styles from './page.module.css';
@@ -22,7 +21,7 @@ export default async function VideoListPage() {
         {publishedVideos.length === 0 ? (
           <p className={styles.empty}>動画はまだ登録されていません。</p>
         ) : (
-          publishedVideos.map((video) => (
+          publishedVideos.map((video: any) => (
             <VideoCard
               key={video.id}
               id={video.id}

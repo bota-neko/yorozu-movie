@@ -1,7 +1,6 @@
 import AdminLayout from '@/components/admin/AdminLayout';
 import VideoForm from '@/components/admin/VideoForm';
-import { db } from '@/lib/db';
-import { videos } from '@/lib/db/schema';
+import { db, videos } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 

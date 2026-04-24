@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { db } from '@/lib/db';
-import { videos } from '@/lib/db/schema';
+import { db, videos } from '@/lib/db';
 import { desc } from 'drizzle-orm';
 import { Plus, Edit2, Trash2, ExternalLink } from 'lucide-react';
 import DeleteButton from '@/components/admin/DeleteButton';
@@ -42,7 +41,7 @@ export default async function AdminDashboard() {
                 </td>
               </tr>
             ) : (
-              allVideos.map((video) => (
+              allVideos.map((video: any) => (
                 <tr key={video.id}>
                   <td>
                     {video.isPublished ? (

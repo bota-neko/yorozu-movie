@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { admins } from '@/lib/db/schema';
+import { db, admins } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { comparePassword } from '@/lib/password';
 import { createAdminSession } from '@/lib/auth';

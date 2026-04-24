@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { settings } from '@/lib/db/schema';
+import { db, settings } from '@/lib/db';
 import { comparePassword } from '@/lib/password';
 import { setViewerAuthenticated } from '@/lib/auth';
 

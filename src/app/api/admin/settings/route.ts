@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { settings } from '@/lib/db/schema';
+import { db, settings } from '@/lib/db';
 import { getAdminSession } from '@/lib/auth';
 import { hashPassword } from '@/lib/password';
 import { validatePassword } from '@/lib/validators';
