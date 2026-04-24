@@ -32,7 +32,7 @@ if (isPg) {
   adminsInstance = schema.adminsSqlite;
 }
 
-export const db = dbInstance;
+export const db = dbInstance as any;
 export const videos = videosInstance as (typeof schema.videos);
 export const settings = settingsInstance as (typeof schema.settings);
 export const admins = adminsInstance as (typeof schema.admins);

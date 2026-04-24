@@ -1,5 +1,4 @@
-import { db } from '../lib/db';
-import { admins, settings } from '../lib/db/schema';
+import { db, admins, settings } from '../lib/db';
 import { hashPassword } from '../lib/password';
 import { eq } from 'drizzle-orm';
 
