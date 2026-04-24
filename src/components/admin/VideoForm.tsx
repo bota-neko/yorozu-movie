@@ -20,6 +20,7 @@ export default function VideoForm({ initialData, isEdit }: VideoFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isFetching, setIsFetching] = useState(false);
 
   const [formData, setFormData] = useState({
     title: initialData?.title || '',
@@ -59,6 +60,37 @@ export default function VideoForm({ initialData, isEdit }: VideoFormProps) {
     }
   };
 
+  const fetchVimeoInfo = async () => {
+    if (!formData.vimeoId) {
+      setError('Vimeo動画IDを入力してください');
+      return;
+    }
+
+    setIsFetching(true);
+    setError('');
+
+    try {
+      // Use Vimeo oEmbed API (does not require API key for public videos)
+      const res = await fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${formData.vimeoId}`);
+      
+      if (res.ok) {
+        const data = await res.json();
+        setFormData(prev => ({
+          ...prev,
+          title: prev.title || data.title || '',
+          description: prev.description || data.description || '',
+          thumbnailUrl: data.thumbnail_url || prev.thumbnailUrl,
+        }));
+      } else {
+        setError('Vimeoから情報を取得できませんでした。動画IDが正しいか、または動画が公開設定になっているか確認してください。');
+      }
+    } catch (err) {
+      setError('Vimeo情報の取得中にエラーが発生しました');
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="card" style={{ maxWidth: '600px' }}>
       {error && <p style={{ color: 'var(--error)', marginBottom: '20px' }}>{error}</p>}
@@ -75,13 +107,28 @@ export default function VideoForm({ initialData, isEdit }: VideoFormProps) {
 
       <div className="input-group">
         <label>Vimeo動画ID *</label>
-        <input
-          type="text"
-          value={formData.vimeoId}
-          onChange={(e) => setFormData({ ...formData, vimeoId: e.target.value })}
-          required
-          placeholder="例: 123456789"
-        />
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <input
+            type="text"
+            value={formData.vimeoId}
+            onChange={(e) => setFormData({ ...formData, vimeoId: e.target.value })}
+            required
+            placeholder="例: 123456789"
+            style={{ flex: 1 }}
+          />
+          <button 
+            type="button" 
+            className="btn btn-outline" 
+            onClick={fetchVimeoInfo}
+            disabled={isFetching || !formData.vimeoId}
+            style={{ whiteSpace: 'nowrap' }}
+          >
+            {isFetching ? '取得中...' : '情報を取得'}
+          </button>
+        </div>
+        <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>
+          IDを入力して「情報を取得」を押すと、タイトルとサムネイルが自動入力されます。
+        </p>
       </div>
 
       <div className="input-group">
