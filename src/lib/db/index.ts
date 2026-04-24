@@ -1,17 +1,32 @@
 import { drizzle as drizzlePg } from 'drizzle-orm/vercel-postgres';
-import { drizzle as drizzleSqlite } from 'drizzle-orm/better-sqlite3';
 import { sql } from '@vercel/postgres';
-import Database from 'better-sqlite3';
 import * as schema from './schema';
 
 const dbUrl = process.env.POSTGRES_URL || process.env.DATABASE_URL;
 const isPg = !!dbUrl;
 
-export const db = isPg
-  ? drizzlePg(sql, { schema })
-  : drizzleSqlite(new Database('sqlite.db'), { schema });
+let dbInstance: any;
+let videosInstance: any;
+let settingsInstance: any;
+let adminsInstance: any;
 
-// Export the correct table objects based on the environment
-export const videos = isPg ? schema.videos : (schema.videosSqlite as unknown as typeof schema.videos);
-export const settings = isPg ? schema.settings : (schema.settingsSqlite as unknown as typeof schema.settings);
-export const admins = isPg ? schema.admins : (schema.adminsSqlite as unknown as typeof schema.admins);
+if (isPg) {
+  dbInstance = drizzlePg(sql, { schema });
+  videosInstance = schema.videos;
+  settingsInstance = schema.settings;
+  adminsInstance = schema.admins;
+} else {
+  // Use require for better-sqlite3 to avoid loading native modules during Vercel build
+  const { drizzle: drizzleSqlite } = require('drizzle-orm/better-sqlite3');
+  const Database = require('better-sqlite3');
+  const sqlite = new Database('sqlite.db');
+  dbInstance = drizzleSqlite(sqlite, { schema });
+  videosInstance = schema.videosSqlite;
+  settingsInstance = schema.settingsSqlite;
+  adminsInstance = schema.adminsSqlite;
+}
+
+export const db = dbInstance;
+export const videos = videosInstance;
+export const settings = settingsInstance;
+export const admins = adminsInstance;
